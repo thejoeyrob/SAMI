@@ -1,79 +1,90 @@
-# SAMI — Spatial Analysis & Mapping Intelligence
-## Working prototype v0.1.0 · by JW EDS
+# SAMI — site planning workspace
 
-This is the first SAMI-branded continuation of the site-planning / route-studio concept.
+Version 0.2.0 · JW EDS · 13 September 2026
 
-## What works in this build
-- Responsive PWA shell for phone / tablet / desktop.
-- Street + satellite base maps.
-- Address/place search using OpenStreetMap Nominatim.
-- Current-location positioning (HTTPS + permission required).
-- Draw access route, egress route and general site routes.
-- Draw site areas / constraint areas.
-- Measure mapped distances.
-- Draw manually identified service lines by service type.
-- Add concern/hazard areas and concern pins.
-- Add map notes.
-- Attach camera/gallery images to map positions during the session.
-- Local project saving.
-- Ask SAMI text command bar.
-- Ask SAMI voice recognition when the browser supports Web Speech Recognition.
-- Voice/text commands can operate core map functions.
-- Trusted-source routing for selected safety/construction topics: HSE, Network Rail, GOV.UK / Environment Agency.
-- Safety-critical queries are not answered from unsupported model memory; source links are surfaced for verification.
-- Export: DXF, GeoJSON, KML, CSV and SAMI project JSON; browser print can be used for PDF.
+This complete flat PWA continues the v0.1.2 SAMI package. All files belong together at the same level. No build tools or installation of dependencies are needed to host it.
 
-## Examples to Ask SAMI
-- “Draw an access route.”
-- “Start an egress route.”
-- “Measure distance.”
-- “Add a note welfare compound.”
-- “Mark a concern soft ground.”
-- “Guidance for working near a railway.”
-- “What guidance applies to underground services?”
-- “Export DXF.”
+## Find the features
 
-## Production integrations intentionally NOT faked in this prototype
-The UI has been structured to add these next:
-1. Server-side grounded AI / RAG endpoint for official-source retrieval, citations and controlled map actions.
-2. NUAR / utility-owner / project utility records subject to licensing and API access.
-3. Ordnance Survey Places / MasterMap and UPRN lookup where licensed.
-4. Environment Agency / SEPA / NRW / NIEA flood and environmental layers.
-5. Heritage, ecology, planning, rail and other constraint datasets.
-6. Multi-user verified observations / contribution moderation — the “Waze for sites” layer.
-7. Enterprise SSO, project permissions, audit trail and organisation workspaces.
-8. Cloud project sync and collaboration.
-9. Inbound CAD/GIS import including DXF/GeoJSON/KML; production DWG/IFC conversion where required.
-10. Native DWG/IFC export through a server-side conversion stack. DXF is provided now for CAD interoperability.
-11. what3words / OS gazetteer / customer asset databases.
-12. Evidence provenance, confidence level and verification state on every externally sourced or community-contributed item.
+| Where | What you can do |
+| --- | --- |
+| **Map** at the top | View the site and draw directly on its geographic map. |
+| **Route plan** at the top | Choose Trakway panels, dimensions and run width, then draw a route to generate full panels. |
+| **Plan drawing** at the top | Fit the defined plan area into the window on a clear drawing background. The view starts locked. |
+| **Library** at the top | Add panels/assets, see the materials schedule, and select existing items for editing. |
+| **Map / Satellite / Drawing**, above the canvas | Change the map background without moving your drawings. |
+| **Undo / Redo**, above the canvas | Reverse or restore edits. While drawing, Undo removes the last draft point. |
+| **Draw**, on the side | Routes, access, egress, boundary areas, rectangles, measurements, notes, concerns and photos. |
+| **Panels**, on the side | Draw a panel route or place one panel. |
+| **Assets**, on the side | Welfare, offices, containers, parking, generators, toilets, skips, stages, ramps or custom footprints. |
+| **Services**, on the side | Choose visible service types, draw records, import GeoJSON or load configured records in your plan area. |
+| **Plan area**, on the side | Define or redefine the shared area, fit it to screen, or open its fixed drawing. |
+| **Layers**, on the side | Show or hide project item types. |
+| **Project** | Rename, add notes, save, restore a backup and adjust SAMI talk-back. |
 
-## Important safety design principle
-SAMI should distinguish:
-- AUTHORITATIVE SOURCE DATA
-- PROJECT-VERIFIED OBSERVATION
-- COMMUNITY / FIELD OBSERVATION
-- CALCULATED / DERIVED INFORMATION
-- AI INFERENCE
+The side toolbar can be dragged with its dotted handle and collapsed with its chevron. Its position is kept clear of the fixed location controls on the right. Tap a label again or use the close button to dismiss a drawer.
 
-The production system should show source, revision/date, provenance, confidence and verification state and must never imply that a community observation or AI response makes an area safe to excavate or work in.
+## Start a plan
 
-## Hosting / installation
-For full PWA, geolocation and service-worker behaviour, host these flat files at an HTTPS origin (for example GitHub Pages, Cloudflare Pages, Netlify or a company environment). Upload the CONTENTS of this folder to the host root.
+1. Use **Find site** or the location button. Zoom to the site.
+2. Open **Plan area**. Choose **Define with two corners**, then tap opposite corners of your site. Alternatively, choose **Use visible map area**.
+3. Open **Route plan** to generate Trakway panels, or use **Draw** / **Assets**.
+4. Tap deliberate route/boundary points and press **Finish**. For an asset, set its size and tap its exact position.
+5. Switch to **Plan drawing**. The same objects appear in the same geographic positions. Draw here and those edits also appear in Map.
+6. Tap an item to rename, move, rotate, edit its points or delete it. Generated panel runs can also be deleted together.
 
-On iPhone/iPad: open the HTTPS URL in Safari → Share → Add to Home Screen.
+Map lock stops panning and zooming while allowing drawing. In Plan drawing it starts on. Unlock temporarily for detail work, or use Fit plan to return to the defined window.
 
-## AI connector
-`config.js` contains an empty `aiEndpoint`. This is deliberate. Production AI credentials must live on a server, never inside browser JavaScript. When a secure endpoint is added, SAMI sends the query plus current project context and expects grounded answer/source/action data back.
+## Add services to your area
 
-## Brand status
-SAMI is being used here as a working product brand pending final trademark/legal clearance. Do not infer registration from the TM shown in concept artwork.
+Define a plan area first. Then open **Services**.
 
+- **Manual record:** choose a type, enter a label and drawing/source reference, then press **Draw selected service / area**. Electricity, gas, water, drainage, telecom and overhead lines draw as lines; ecological and other restrictions draw as areas.
+- **Import:** use **Import records · GeoJSON**. The file must use WGS84 longitude/latitude coordinates. Points, lines, polygons, multipart features and polygon holes are supported. Records are clipped to the plan area, and records wholly outside it are excluded. Re-importing the same filename replaces that import's records.
+- **Visibility:** tick types to display them. Imported records of recognised types remain saved even when a type is hidden. A checkbox does not create utility records that have not been provided.
+- **Connected records:** if an approved area-query source is configured, **Load selected layers in plan area** loads its records. It does not reload when you pan. Repeat requests use a short cache, replacing previous records from that source. Changing the area, selected types or project cancels a pending load; stale responses cannot overwrite the new state.
 
-## Runtime note
-This prototype references Leaflet and Leaflet.Draw from public CDNs and uses online basemap/search services. The PWA shell is cacheable, but the first run and live map tiles require an internet connection. A production build should bundle the mapping libraries locally and, where required, add licensed/offline mapping packages.
+Recognised `serviceType` values: `electric`, `gas`, `water`, `drainage`, `telecom`, `ohl`, `ecology`, `sssi`, `tpo`, `heritage`, `archaeology`, `other`. Other fields such as `name`, `label`, `source` and `verification` are retained. Without a recognised service type, the selected import type is used.
 
-## Ask SAMI interaction model
-“Ask SAMI” is the user-facing interaction phrase rather than a required wake-word. Users can type or tap the microphone to ask for a map action or construction reference. The browser voice-recognition feature depends on platform/browser support. An optional spoken-response setting is available in Project.
+**No live utility, NUAR, tree-protection or environmental dataset is connected by default.** Use authorised project records or configure an approved service. Manual/imported records are shown as unverified unless their records explicitly state otherwise. This is a planning display, not clearance to excavate.
 
-For safety-critical questions, the prototype deliberately returns links to official/guidance sources rather than inventing prescriptive distances or controls. A production AI/RAG service should retrieve the source content server-side, retain provenance/revision metadata, quote minimally, and display citations beside each answer.
+## Panels and scale
+
+Panel and asset footprints use metres on a local geographic projection. Default panel dimensions are editable. Lion, Hybrid and TuffTrak use a 3 m run direction; Sabre-X uses a 4 × 2 m footprint with 0.2 m joint overlaps by default.
+
+Routes use full panels. Meeting segments include overlapping panels at bends. For non-Sabre turns greater than 15° and less than 60°, four extra inside panels are added on each meeting run. Sharp corners and Sabre bends are flagged for review. The app does not verify Sabre joint positions or calculate an approved lateral stagger. Check corner coverage, connections, physical product dimensions and site conditions before installation. Panel quantities count full panels, including overlaps; they are not the net covered area.
+
+Measurements can snap to nearby panel / asset corners. Editing measurement points recalculates the displayed distance.
+
+## Ask SAMI
+
+There is one logo button. With an empty text field, **Ask SAMI** starts speech capture. Tap it again to stop. With typed text, the same button becomes **Send request**. Enter also sends text.
+
+Commands include: “open panels”, “show assets”, “show services”, “define plan area”, “plan drawing”, “satellite view”, “lock map”, “unlock map”, “undo”, “redo”, “draw an access route”, “add a note welfare”, and “export DXF”.
+
+Talk-back uses an available device voice. Choose a voice or turn it off in **Project**; the conversation also has a mute button. This package does not include a cloned or studio-recorded SAMI voice. Speech capture and playback depend on browser support and microphone permission. Typing remains available if voice capture is unavailable.
+
+The optional AI endpoint is blank. Without it, SAMI uses local map commands and links to selected official references. It does not claim to have searched an external service.
+
+## Save, transfer and install
+
+- Your current project saves on this device, including compressed photos. Existing v0.1.x SAMI projects migrate when opened on the same origin. Keep a backup before changing hosting addresses.
+- Use **Export → Editable SAMI backup** to transfer the complete plan to another device. Restore it under **Project**. The app has no cloud sync in this package.
+- GeoJSON and KML keep geographic positions and include the plan boundary. DXF uses a local metre grid and records its longitude/latitude origin. CSV contains the materials schedule and other project records. Print / save PDF uses the drawing view.
+- Unzip the package and upload **all its files together** to the same directory on your HTTPS host, such as your existing GitHub Pages repository. Replace the old app files. Do not upload only the ZIP.
+- Open the hosted URL in Safari on iPad/iPhone, then **Share → Add to Home Screen**.
+- If the previous app is still visible after an update, close and reopen it, then reload once while online. The revised service worker refreshes app files from the network and keeps an offline fallback.
+
+Mapping and geometry libraries are included locally. The app shell and saved drawing work after a successful online load. Live map imagery, address search, browser-provided speech recognition and connected services still need their respective online services. This package does not cache a complete offline basemap.
+
+## Connection configuration
+
+`config.js` exposes optional `aiEndpoint` and `serviceSources` values. Keep private provider keys on your server. Each service source specifies a display `name`, recognised `type` and `url`. The app appends `bbox=west,south,east,north`, `crs=EPSG:4326` and `limit=10000`. The endpoint must filter to the supplied bounding box, support CORS where needed, and return GeoJSON. Client-side clipping and response limits remain in force. No API credentials are included.
+
+## Verification for this release
+
+Passed local JavaScript / DOM interaction tests for initialization, area creation, route generation, Undo/Redo, shared map/plan objects, map locking, asset placement/editing/deletion, manual and imported services, clipping, import replacement, bounded requests, caching, no fetch on pan, cancellation of stale responses, text commands, project round trips, export execution and v0.1.x migration. Pure geometry tests cover metric distance, complete-panel counts and clipping inside/outside boundaries.
+
+Cloud-browser policy prevented opening the local preview. Live iPad/Safari rendering, microphone capture, voice quality, external map services and a real licensed record endpoint were not verified in this session. The responsive layout is included; device testing is still needed.
+
+Leaflet and polygon-clipping licences are included in this package.
