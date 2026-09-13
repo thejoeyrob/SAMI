@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#070b0c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SAMI" />
+  <meta name="description" content="SAMI — Spatial Analysis & Mapping Intelligence. Site planning, mapping, intelligence and field capture in one place." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>SAMI · Spatial Analysis & Mapping Intelligence</title>
+</head>
+<body>
+  <div id="splash" class="splash">
+    <img src="sami-brand.png" alt="SAMI Spatial Analysis and Mapping Intelligence" />
+    <div class="splash-status"><span class="pulse-dot"></span>Preparing spatial workspace</div>
+  </div>
+
+  <div id="app" class="app-shell" aria-hidden="true">
+    <header class="topbar">
+      <button class="brand-button" id="homeBtn" aria-label="SAMI home">
+        <img src="sami-wordmark.png" alt="SAMI" />
+      </button>
+      <div class="project-title-wrap">
+        <input id="projectName" class="project-title" value="Untitled site" aria-label="Project name" />
+        <div class="project-meta"><span id="coordReadout">Map ready</span><span class="dot-sep">•</span><span id="saveState">Saved locally</span></div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="searchBtn" title="Find site">⌕</button>
+        <button class="icon-btn" id="layersBtn" title="Layers">◫</button>
+        <button class="icon-btn" id="projectBtn" title="Project">☰</button>
+        <button class="accent-btn" id="exportBtn">Export</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <div id="map" class="map"></div>
+
+      <div class="map-status-chip" id="sourceChip"><span class="status-light"></span>Base map · OpenStreetMap</div>
+
+      <div class="map-controls top-left">
+        <button id="locateBtn" title="Use current location">◎</button>
+        <button id="fitBtn" title="Fit project">⛶</button>
+        <button id="northBtn" title="North up">N</button>
+      </div>
+
+      <aside id="toolRail" class="tool-rail">
+        <button class="tool active" data-tool="select"><span>↖</span><small>Select</small></button>
+        <button class="tool" data-tool="access"><span>⇢</span><small>Access</small></button>
+        <button class="tool" data-tool="egress"><span>⇠</span><small>Egress</small></button>
+        <button class="tool" data-tool="route"><span>⌁</span><small>Route</small></button>
+        <button class="tool" data-tool="area"><span>⬡</span><small>Area</small></button>
+        <button class="tool" data-tool="measure"><span>↔</span><small>Measure</small></button>
+        <button class="tool" data-tool="service"><span>〰</span><small>Service</small></button>
+        <button class="tool" data-tool="hazard"><span>△</span><small>Concern</small></button>
+        <button class="tool" data-tool="note"><span>✎</span><small>Note</small></button>
+        <button class="tool" data-tool="photo"><span>▣</span><small>Photo</small></button>
+      </aside>
+
+      <section id="drawer" class="drawer" aria-hidden="true">
+        <div class="drawer-head">
+          <div><div class="eyebrow">SAMI WORKSPACE</div><h2 id="drawerTitle">Project</h2></div>
+          <button id="closeDrawer" class="close-btn">×</button>
+        </div>
+        <div id="drawerContent" class="drawer-content"></div>
+      </section>
+
+      <section id="samiPanel" class="sami-panel" aria-live="polite">
+        <div class="sami-panel-head">
+          <div class="sami-orb"><span></span></div>
+          <div><strong>Ask SAMI</strong><small>Spatial intelligence · map control · trusted sources</small></div>
+          <button id="closeSami" class="close-btn">×</button>
+        </div>
+        <div id="samiMessages" class="sami-messages">
+          <div class="msg sami"><p><strong>SAMI is ready.</strong> Ask me to control the map, record site information, or find a trusted construction reference.</p><p class="examples">Try: “draw an access route” · “add a note welfare compound” · “guidance for working near a railway” · “export DXF”</p></div>
+        </div>
+      </section>
+
+      <div class="ask-bar-wrap">
+        <div class="ask-bar" id="askBar">
+          <button id="micBtn" class="mic-btn" aria-label="Voice command"><span class="mic-glyph">●</span></button>
+          <input id="askInput" type="text" autocomplete="off" placeholder="Ask SAMI — site plan help, map command or construction guidance…" />
+          <button id="sendBtn" class="send-btn">Ask SAMI</button>
+        </div>
+        <div id="voiceHint" class="voice-hint">Tap the mic for voice command. Safety-critical guidance is source-linked, not invented.</div>
+      </div>
+
+      <input id="photoInput" type="file" accept="image/*" capture="environment" hidden />
+    </main>
+  </div>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head"><h3 id="modalTitle">SAMI</h3><button id="modalClose" class="close-btn">×</button></div>
+      <div id="modalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
