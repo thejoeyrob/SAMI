@@ -1,5 +1,5 @@
-const CACHE='sami-spatial-v0.2.0';
-const SHELL=['./','./index.html','./styles.css','./app.js','./geometry.js','./polygon-clipping.js','./leaflet.js','./leaflet.css','./layers.png','./layers-2x.png','./marker-icon.png','./marker-icon-2x.png','./marker-shadow.png','./config.js','./manifest.webmanifest','./sami-wordmark.png','./sami-mark.png','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
+const CACHE='sami-spatial-v0.6.0';
+const SHELL=['./','./index.html','./styles.css','./app.js','./geometry.js','./sami-qrcode.js','./document-engine.js','./QR-CODE-LICENSE.txt','./polygon-clipping.js','./leaflet.js','./leaflet.css','./layers.png','./layers-2x.png','./marker-icon.png','./marker-icon-2x.png','./marker-shadow.png','./config.js','./manifest.webmanifest','./sami-wordmark.png','./sami-mark.png','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('sami-spatial-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{

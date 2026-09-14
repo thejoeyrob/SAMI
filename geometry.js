@@ -44,5 +44,18 @@ function panels(points,o){
  }
  return{panels:out,warnings:[...new Set(warnings)],distance:length(points)};
 }
-return{copy,validCoord,validBounds,inside,distance,length,projection,rectangle,boundsGeometry,boundsOf,segment,clipLine,clipGeometry,area,validateFeature,panels};
+
+function expandBoundsMeters(b,meters){
+ if(!validBounds(b))return null;const m=Math.max(0,+meters||0),c=[(b[0]+b[2])/2,(b[1]+b[3])/2],pr=projection(c),sw=pr.xy([b[0],b[1]]),ne=pr.xy([b[2],b[3]]);const a=pr.ll([sw[0]-m,sw[1]-m]),z=pr.ll([ne[0]+m,ne[1]+m]);return[Math.max(-180,a[0]),Math.max(-85,a[1]),Math.min(180,z[0]),Math.min(85,z[1])];
+}
+function circlePolygon(center,radius,segments=40){
+ const r=Math.max(.05,+radius||0),n=Math.max(12,Math.min(96,Math.round(segments)||40)),pr=projection(center),ring=[];for(let i=0;i<n;i++){const a=2*Math.PI*i/n;ring.push(pr.ll([Math.sin(a)*r,Math.cos(a)*r]));}ring.push(ring[0].slice());return{type:'Polygon',coordinates:[ring]};
+}
+function lineBuffer(points,width){
+ if(!Array.isArray(points)||points.length<2)throw Error('Tap at least two points.');const w=+width;if(!(w>.05&&w<=200))throw Error('Enter a route width between 0.05 and 200 metres.');const pr=projection(points[0]),ps=points.map(pr.xy),half=w/2,parts=[];
+ for(let i=1;i<ps.length;i++){const a=ps[i-1],b=ps[i],dx=b[0]-a[0],dy=b[1]-a[1],d=Math.hypot(dx,dy);if(d<.01)continue;const ux=dx/d,uy=dy/d,vx=-uy*half,vy=ux*half;parts.push([[[a[0]+vx,a[1]+vy],[b[0]+vx,b[1]+vy],[b[0]-vx,b[1]-vy],[a[0]-vx,a[1]-vy],[a[0]+vx,a[1]+vy]]]);}
+ for(const p of ps){const ring=[],n=20;for(let j=0;j<n;j++){const a=2*Math.PI*j/n;ring.push([p[0]+Math.sin(a)*half,p[1]+Math.cos(a)*half]);}ring.push(ring[0].slice());parts.push([ring]);}
+ if(!parts.length)throw Error('Route is too short.');const merged=pc.union(...parts);const back=poly=>poly.map(r=>r.map(pr.ll));const coords=merged.map(back);return coords.length===1?{type:'Polygon',coordinates:coords[0]}:{type:'MultiPolygon',coordinates:coords};
+}
+return{copy,validCoord,validBounds,inside,distance,length,projection,rectangle,boundsGeometry,boundsOf,segment,clipLine,clipGeometry,area,validateFeature,panels,expandBoundsMeters,circlePolygon,lineBuffer};
 });
